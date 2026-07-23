@@ -19,3 +19,11 @@ class NetworkFailure extends Failure {
 class CacheFailure extends Failure {
   const CacheFailure([super.message = 'Failed to read local cache.']);
 }
+
+class RateLimitFailure extends Failure {
+  const RateLimitFailure([super.message = 'Too many requests. Please slow down.']);
+}
+
+class UnknownFailure extends Failure {
+  const UnknownFailure([super.message = 'An unexpected error occurred.']);
+}
