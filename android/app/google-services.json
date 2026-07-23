@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "551750164492",
+    "project_id": "buddy-ai-7b1b8",
+    "storage_bucket": "buddy-ai-7b1b8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551750164492:android:c49a878b6e2c463daa4e29",
+        "android_client_info": {
+          "package_name": "dev.vasurathore.buddy_ai.buddy_ai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7tZPHGQhczNRJvysvJx9HW9E1WeJXIV4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
