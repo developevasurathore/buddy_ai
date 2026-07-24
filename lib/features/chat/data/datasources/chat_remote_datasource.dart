@@ -1,5 +1,4 @@
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:buddy_ai/core/constants/api_constants.dart';
+import 'package:google_generative_ai/google_generative_ai.dart' hide ServerException;
 import 'package:buddy_ai/core/error/exceptions.dart';
 import 'package:buddy_ai/features/chat/data/models/message_model.dart';
 import 'package:buddy_ai/features/chat/domain/entities/message_entity.dart';
@@ -12,8 +11,7 @@ abstract class ChatRemoteDataSource {
 }
 
 class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
-  final FirebaseFunctions functions;
-  const ChatRemoteDataSourceImpl(this.functions);
+  static const String _apiKey = String.fromEnvironment('GEMINI_API_KEY');
 
   @override
   Future<MessageModel> sendMessage({
@@ -21,29 +19,26 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
     required List<MessageEntity> conversationHistory,
   }) async {
     try {
-      final callable = functions.httpsCallable(
-        ApiConstants.sendMessageFunction,
-        options: HttpsCallableOptions(timeout: ApiConstants.requestTimeout),
+      final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: _apiKey);
+
+      final history = conversationHistory.map((m) {
+        return Content(
+          m.sender == MessageSender.user ? 'user' : 'model',
+          [TextPart(m.content)],
+        );
+      }).toList();
+
+      final chat = model.startChat(history: history);
+      final response = await chat.sendMessage(Content.text(content));
+
+      return MessageModel(
+        id: DateTime.now().microsecondsSinceEpoch.toString(),
+        content: response.text ?? 'No response',
+        sender: MessageSender.ai,
+        timestamp: DateTime.now(),
       );
-
-      final response = await callable.call<Map<String, dynamic>>({
-        'message': content,
-        'history': conversationHistory
-            .map((m) => {
-          'role': m.sender == MessageSender.user ? 'user' : 'assistant',
-          'content': m.content,
-        })
-            .toList(),
-      });
-
-      return MessageModel.fromFunctionResponse(response.data);
-    } on FirebaseFunctionsException catch (e) {
-      if (e.code == 'resource-exhausted') {
-        throw RateLimitException(e.message ?? 'Rate limit exceeded');
-      }
-      throw ServerException(e.message ?? 'Cloud Function call failed');
-    } catch (_) {
-      throw const ServerException();
+    } catch (e) {
+      throw ServerException(e.toString());
     }
   }
 }

@@ -21,6 +21,7 @@ dependencies:
   cloud_functions: ^6.3.5
   hive_flutter: ^1.1.0
   equatable: ^2.1.0
+  google_generative_ai: ^0.4.7
 
 dev_dependencies:
   flutter_test:

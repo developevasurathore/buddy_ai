@@ -21,7 +21,7 @@ final networkInfoProvider = Provider<NetworkInfo>((ref) {
 
 // ---- Data Sources ----
 final chatRemoteDataSourceProvider = Provider<ChatRemoteDataSource>((ref) {
-  return ChatRemoteDataSourceImpl(ref.watch(firebaseFunctionsProvider));
+  return ChatRemoteDataSourceImpl();
 });
 
 final chatLocalDataSourceProvider = Provider<ChatLocalDataSource>((ref) {
